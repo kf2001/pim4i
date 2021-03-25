@@ -5,26 +5,13 @@ export default {
   data: function () {
     return {
       maxzindex: 1,
-      Nota: function (
-        id_,
-        testo_,
-        posx_,
-        posy_,
-        width_,
-        height_,
-        forecolor_,
-        backcolor_
-      ) {
+      Nota: function (id_, testo_, posx_, posy_, colore_) {
         this.id = id_;
         this.testo = testo_;
         this.posx = posx_;
         this.posy = posy_;
-        this.width = width_;
-        this.height = height_;
-        this.forecolor = forecolor_;
-        this.backcolor = backcolor_;
-        this.fontsize = 16;
-        this.fontfamily = "Verdana";
+        this.colore = colore_;
+
         return this;
       },
       Notes: [],
@@ -35,38 +22,64 @@ export default {
     console.log(this.$refs.board);
 
     this.boarddiv.addEventListener("dblclick", this.addNote);
-    /*
-    this.boarddiv.addEventListener("drop", this.onDrop);
-    this.boarddiv.addEventListener("dragover", (event) => {
-      event.preventDefault();
-      });
-     }); this.boarddiv.addEventListener("dragenter", (event) => {
-        event.dataTrasfer.dropEffect = "move";
-      */
   },
   created: function () {
     // this.carica();
-
     console.log(33333);
   },
 
   methods: {
     salva() {
+      let Notes_ = document.getElementsByClassName("nota");
+
+      this.Notes = [];
+      Notes_.forEach((nn) => {
+        let newNota = new this.Nota(
+          nn.id,
+          nn.innerHTML,
+          nn.style.offsetX,
+          nn.style.offsetY,
+          nn.colore
+        );
+        this.Notes.push(newNota);
+      });
+
       localStorage.Notes = JSON.stringify(this.Notes);
     },
     carica() {
       if (localStorage.Notes) this.Notes = JSON.parse(localStorage.Notes);
+
+      Notes.forEach((nn) => {
+        let params = {
+          id: nn.id,
+          offsetX: nn.offsetX,
+          offsetY: nn.offsetY,
+          zIndex: nn.zIndex,
+          //   testo:maxId*1+1,
+          testo: nn.testo,
+          colore: nn.colore,
+          //  tipo:params.tipo
+        };
+
+        this.addStick(params);
+
+        /*   let newNota = new this.Nota(
+          nn.id,
+          nn.innerHTML,
+          nn.offsetX,
+          nn.offsetY,
+          40,
+          60,
+          "black",
+          "yellow"
+        );
+        this.Notes.push(newNota); */
+      });
     },
-  /*   onDragOver(evt) {
-      evt.preventDefault();
-      // Set the dropEffect to move
-      evt.dataTransfer.dropEffect = "move";
-    },
- */
+
     onDrop(evt, list) {
-    
       const itemID = evt.dataTransfer.getData("itemID");
-     
+
       let offsets = this.boarddiv.getBoundingClientRect();
       let top = offsets.top;
       let left = offsets.left;
@@ -75,21 +88,17 @@ export default {
       note.style.left = evt.offsetX + left + "px";
       note.style.top = evt.offsetY + top + "px";
     },
-    addNote(evt) {
-      let idmax = 0;
-      if (this.Notes.length)
-        idmax = this.Notes.map((cc) => cc.id).reduce((max, d) =>
-          1*d > 1*max ? 1*d : 1*max
-        );
+
+    addStick(params) {
       let offsets = this.boarddiv.getBoundingClientRect();
       let top = offsets.top;
       let left = offsets.left;
 
       var note = document.createElement("div");
-      note.id = 1*idmax + 1;
-      note.classList.add("note");
-      note.style.left = evt.offsetX + left + "px";
-      note.style.top = evt.offsetY + top + "px";
+      note.id = params.id;
+      note.classList.add("nota");
+      note.style.left = params.offsetX + left + "px";
+      note.style.top = params.offsetY + top + "px";
       note.style.width = 40 + "px";
       note.style.height = 60 + "px";
       note.style.color = "black";
@@ -97,47 +106,55 @@ export default {
       note.style.fontSize = "12px";
       note.style.fontFamily = "Verdana";
       note.style.position = "absolute";
-      note.innerHTML = note.id;
+      note.innerHTML = params.testo;
       note.setAttribute("contenteditable", true);
       note.setAttribute("draggable", true);
-      note.style.zIndex = ++this.maxzindex;
+      note.style.zIndex = params.zIndex;
+      note.colore = params.colore;
 
       note.addEventListener("dragstart", function (event) {
         event.dataTransfer.dropEffect = "move";
         event.dataTransfer.effectAllowed = "move";
-      
+
         event.dataTransfer.setData("itemID", this.id);
-     
       });
 
       note.addEventListener("dragend", function (event) {
-       
         event.target.classList.remove("raised");
       });
 
       note.addEventListener("mousedown", function (event) {
-       
         event.target.style.zIndex = 12 + Math.floor(Math.random() * 10);
-      
+
         event.stopPropagation();
       });
 
-      let newNota = new this.Nota(
-        note.id,
-        note.innerHTML,
-        evt.offsetX,
-        evt.offsetY,
-        40,
-        60,
-        "black",
-        "yellow"
-      );
-      this.Notes.push(newNota);
-
       this.boarddiv.append(note);
-  
 
       return note;
+    },
+
+    addNote(evt) {
+      let maxId = 0;
+      let maxzindex = 0;
+      let Notes_ = document.getElementsByClassName("nota");
+      Notes_.forEach((nn) => {
+        if (nn.style.zIndex * 1 > maxzindex * 1) maxzindex = 1 * nn.style.zIndex;
+        if (nn.id * 1 > maxId * 1) maxId = 1 * nn.id;
+      });
+
+      let params = {
+        id: maxId + 1,
+        offsetX: evt.offsetX,
+        offsetY: evt.offsetY,
+        zIndex: maxzindex * 1 + 1,
+        //   testo:maxId*1+1,
+        testo: "",
+        colore: 0,
+        //  tipo:params.tipo
+      };
+
+      this.addStick(params);
     },
   },
 };
@@ -147,7 +164,7 @@ export default {
   <div>
     <div>
       <div style="width: 500px">
-        <button id="save">Salva</button>
+        <button id="save" @click="salva">Salva</button>
         <button id="colore">Colore</button>
         <button id="fontp">Font +</button>
         <button id="fontm">Font -</button>
@@ -166,7 +183,7 @@ export default {
   </div>
 </template>
 
-<style lang='css'>
+<style lang="css">
 #board {
   height: 400px;
   width: 600px;
@@ -174,7 +191,7 @@ export default {
   border-radius: 5px;
   float: left;
   z-index: 10;
-  background-color: #474a51; 
+  background-color: #474a51;
   background-image: url("cork.jpg");
   background-repeat: repeat;
 }
@@ -188,7 +205,7 @@ export default {
   background-color: #c0c0c0;
 }
 
-.note {
+.nota {
   font-family: "Gabriola";
   font-size: 1.65em;
   font-weight: bolder;
@@ -207,5 +224,3 @@ export default {
   box-shadow: 0.2em 0.2em 0.5em black;
 }
 </style>
-
-
