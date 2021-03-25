@@ -2,7 +2,7 @@ import Vue from 'vue'
 	import Router from 'vue-router'
 
     import MyCal from './views/MyCal.vue'
-    import MyPin from './views/PinBoard.vue'
+    
     import MyToDo from './views/ToDo.vue'
 	import MyStick from './views/StickBoard.vue'
 
@@ -14,11 +14,7 @@ import Vue from 'vue'
 		  name: 'Calendar',
 		  component: MyCal
 		},
-		{
-		  path: '/pinboard',
-		  name: 'Pinboard',
-		  component: MyPin
-		},
+	
         {
             path: '/todo',
             name: 'Todo',

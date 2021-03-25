@@ -1,27 +1,16 @@
 <template>
- <main-page></main-page>
-<!-- <div>
-  <div id="nav">
-      <router-link to="/calendar">Home</router-link> |
-      <router-link to="/pinboard">About</router-link>
-  </div>
-  <router-view />
-  </div> -->
+  <main-page></main-page>
 </template>
 
 <script>
-/* import MyCal from './components/MyCal.vue'
-import MyPin from './components/PinBoard.vue'
-import MyToDo from './components/ToDo.vue' */
-import MainPage from './components/MainPage.vue'
+import MainPage from "./components/MainPage.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
- MainPage
-    // MyCal,MyPin,MyToDo
-  }
-}
+    MainPage,
+  },
+};
 </script>
 
 <style>
@@ -31,6 +20,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
- /* margin-top: 60px;*/
+  /* margin-top: 60px;*/
 }
 </style>

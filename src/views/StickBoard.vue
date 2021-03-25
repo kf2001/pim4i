@@ -4,7 +4,12 @@ export default {
   components: {},
   data: function () {
     return {
-      maxzindex: 1,
+      backGrounds: ["#F5FFA5", "#88FB87", "#FFA3FF", "#83FBE0"],
+      stickWidth: 60,
+      stickHeight: 90,
+      boardtop: 0,
+      boardLeft: 0,
+
       Nota: function (id_, testo_, posx_, posy_, colore_, zIndex_) {
         this.id = id_;
         this.testo = testo_;
@@ -20,44 +25,56 @@ export default {
   },
   mounted: function () {
     this.boarddiv = this.$refs.board;
-    console.log(this.$refs.board);
 
     this.boarddiv.addEventListener("dblclick", this.addNote);
+
+    let offsets = this.boarddiv.getBoundingClientRect();
+    this.boardTop = offsets.top;
+    this.boardLeft = offsets.left;
+
+    this.carica();
   },
-  created: function () {
-    // this.carica();
-    console.log(33333);
-  },
+  created: function () {},
 
   methods: {
     salva() {
-      let Notes_ = document.getElementsByClassName("nota");
-      let offsets = this.boarddiv.getBoundingClientRect();
-      let top = offsets.top;
-      let left = offsets.left;
+      let Notes_ = document.getElementsByClassName("stick");
 
       this.Notes = [];
       Notes_.forEach((nn) => {
-        console.log(nn.style.left, nn.style.top);
-        let aaa = this.estrai_offset(nn.style.left, left);
         let newNota = new this.Nota(
           nn.id,
           nn.innerHTML,
-          this.estrai_offset(nn.style.left, left),
-          this.estrai_offset(nn.style.top, top),
+          this.estrai_offset(nn.style.left, this.boardLeft),
+          this.estrai_offset(nn.style.top, this.boardTop),
           nn.colore,
           nn.style.zIndex
         );
         this.Notes.push(newNota);
       });
-      console.log(Notes_);
+
       localStorage.Notes = JSON.stringify(this.Notes);
     },
 
     estrai_offset(px, start) {
-      console.log(px, start);
       return parseInt(px.slice(0, -2) - start);
     },
+    getMaxZIndex: function (sticks_) {
+      let maxzindex = 0;
+      sticks_.forEach((nn) => {
+        if (nn.style.zIndex * 1 > maxzindex * 1) maxzindex = 1 * nn.style.zIndex;
+      });
+      return maxzindex;
+    },
+    getMaxId: function (sticks_) {
+      let maxId = 0;
+      sticks_.forEach((nn) => {
+        if (nn.id * 1 > maxId * 1) maxId = 1 * nn.id;
+      });
+
+      return maxId;
+    },
+
     carica() {
       if (localStorage.Notes) this.Notes = JSON.parse(localStorage.Notes);
 
@@ -67,67 +84,81 @@ export default {
           left: nn.posx,
           top: nn.posy,
           zIndex: nn.zIndex,
-
           testo: nn.testo,
           colore: nn.colore,
         };
-        console.log(params);
+
         this.addStick(params);
       });
     },
 
-    onDrop(evt, list) {
+    onDrop(evt) {
       const itemID = evt.dataTransfer.getData("itemID");
+      const px = evt.dataTransfer.getData("px");
+      const py = evt.dataTransfer.getData("py");
 
-      let offsets = this.boarddiv.getBoundingClientRect();
-      let top = offsets.top;
-      let left = offsets.left;
       let note = document.getElementById(itemID);
 
-      note.style.left = evt.offsetX + left + "px";
-      note.style.top = evt.offsetY + top + "px";
+      note.style.left = evt.offsetX + this.boardLeft - px * 1 + "px";
+      note.style.top = evt.offsetY + this.boardTop - py * 1 + "px";
+    },
+    onDropTrash(evt) {
+      const itemID = evt.dataTransfer.getData("itemID");
+
+      let note = document.getElementById(itemID);
+      note.remove();
     },
 
     addStick(params) {
-      let offsets = this.boarddiv.getBoundingClientRect();
-      let top = offsets.top;
-      let left = offsets.left;
-
-      console.log(params);
-
       var note = document.createElement("div");
       note.id = params.id;
-      note.classList.add("nota");
-      note.style.left = params.left + left + "px";
-      note.style.top = params.top + top + "px";
-      note.style.width = 40 + "px";
-      note.style.height = 60 + "px";
+      note.classList.add("stick");
+      note.style.left = params.left + this.boardLeft + "px";
+      note.style.top = params.top + this.boardTop + "px";
+      note.style.width = this.stickWidth + "px";
+      note.style.height = this.stickHeight + "px";
       note.style.color = "black";
-      note.style.backgroundColor = "yellow";
+      note.style.backgroundColor = this.backGrounds[params.colore];
       note.style.fontSize = "12px";
       note.style.fontFamily = "Verdana";
       note.style.position = "absolute";
       note.innerHTML = params.testo;
       note.setAttribute("contenteditable", true);
       note.setAttribute("draggable", true);
+      note.style.overflow = "hidden";
       note.style.zIndex = params.zIndex;
       note.colore = params.colore;
-
+      const ofx = this.boardLeft;
+      const ofy = this.boardTop;
       note.addEventListener("dragstart", function (event) {
         event.dataTransfer.dropEffect = "move";
+
         event.dataTransfer.effectAllowed = "move";
+        var rect = event.target.getBoundingClientRect();
+        var x = event.clientX - rect.left; //x position within the element.
+        var y = event.clientY - rect.top; //y position within the element.
 
         event.dataTransfer.setData("itemID", this.id);
+        event.dataTransfer.setData("px", x);
+        event.dataTransfer.setData("py", y);
       });
 
       note.addEventListener("dragend", function (event) {
         event.target.classList.remove("raised");
       });
-
+      const mzi = this.getMaxZIndex;
       note.addEventListener("mousedown", function (event) {
-        event.target.style.zIndex = 12 + Math.floor(Math.random() * 10);
-
+        event.target.style.zIndex = mzi(document.getElementsByClassName("stick")) + 1;
         event.stopPropagation();
+      });
+      note.addEventListener("keypress", function (event) {
+        var keycode = event.charCode || event.keyCode;
+
+        if (keycode == 13) {
+          event.preventDefault();
+
+          return false;
+        }
       });
 
       this.boarddiv.append(note);
@@ -136,23 +167,23 @@ export default {
     },
 
     addNote(evt) {
-      let maxId = 0;
-      let maxzindex = 0;
-      let Notes_ = document.getElementsByClassName("nota");
-      Notes_.forEach((nn) => {
+      let Notes_ = document.getElementsByClassName("stick");
+      let maxzindex = this.getMaxZIndex(Notes_);
+      let maxId = this.getMaxId(Notes_);
+
+      /*      Notes_.forEach((nn) => {
         if (nn.style.zIndex * 1 > maxzindex * 1) maxzindex = 1 * nn.style.zIndex;
         if (nn.id * 1 > maxId * 1) maxId = 1 * nn.id;
       });
-
+ */
       let params = {
         id: maxId + 1,
         left: evt.offsetX,
         top: evt.offsetY,
         zIndex: maxzindex * 1 + 1,
-        //   testo:maxId*1+1,
+
         testo: "",
-        colore: 0,
-        //  tipo:params.tipo
+        colore: Math.floor(Math.random() * this.backGrounds.length),
       };
 
       this.addStick(params);
@@ -166,7 +197,7 @@ export default {
     <div>
       <div style="width: 500px">
         <button id="save" @click="salva">Salva</button>
-        <button id="carica" @click="carica">Carica</button>
+        <!-- <button id="carica" @click="carica">Carica</button> -->
         <button id="colore">Colore</button>
         <button id="fontp">Font +</button>
         <button id="fontm">Font -</button>
@@ -179,6 +210,15 @@ export default {
       ref="board"
       class="drop-zone"
       @drop="onDrop($event, 1)"
+      @dragover.prevent
+      @dragenter.prevent
+    ></div>
+
+    <div
+      id="trash"
+      ref="trash"
+      class="drop-zone"
+      @drop="onDropTrash($event, 1)"
       @dragover.prevent
       @dragenter.prevent
     ></div>
@@ -204,10 +244,12 @@ export default {
   border: solid black 2px;
   border-radius: 2px;
   float: right;
+  background-image: url("trash.png");
+  background-size: cover;
   background-color: #c0c0c0;
 }
 
-.nota {
+.stick {
   font-family: "Gabriola";
   font-size: 1.65em;
   font-weight: bolder;

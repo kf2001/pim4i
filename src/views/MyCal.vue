@@ -13,9 +13,8 @@ export default {
   },
   data: function () {
     return {
-     
-      tipi: ["lavoro", "impegno","scadenza" ,"extra/svago", "nota"],
-      colori:["royalblue","green", "darkmagenta","orange", "yellow"],
+      tipi: ["lavoro", "impegno", "scadenza", "extra/svago", "nota"],
+      colori: ["royalblue", "green", "magenta", "darkorange", "#dd0"],
       tipoevento: 0,
       calendarOptions: {
         events: [],
@@ -43,16 +42,12 @@ export default {
         slotDuration: "00:30:00",
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
-        drop: function () {
- 
-        },
+        drop: function () {},
         eventsSet: this.handleEvents,
         dragRevertDuration: 0,
         droppable: true,
         dropAccept: true,
-        eventDragStop: function (event, jsEvent, ui, view) {
-       
-        },
+        eventDragStop: function (event, jsEvent, ui, view) {},
         // this allows things to be dropped onto the calendar
         /* you can update a remote database when these fire:
         eventAdd:
@@ -91,7 +86,8 @@ export default {
           end: selectInfo.endStr,
           allDay: selectInfo.allDay,
           backgroundColor: this.colori[this.tipoevento],
-          tipo: this.tipoevento
+          textColor: "black",
+          tipo: this.tipoevento,
         });
 
         this.salva();
@@ -99,12 +95,10 @@ export default {
     },
     handleEventClick(clickInfo) {
       if (
-        confirm(
-          `Are you sure you want to delete the event '${clickInfo.event.title}'`
-        )
+        confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)
       ) {
         clickInfo.event.remove();
-          this.salva();
+        this.salva();
       }
     },
     handleEvents(events) {
@@ -116,22 +110,39 @@ export default {
 
 <template>
   <div class="demo-app">
-   <div>
-<sui-form-fields grouped>
+    <div>
+      <sui-form-fields grouped>
+        <label>Tipo evento</label>
+        <sui-form-field>
+          <div class="fc-event lavoro">
+            <sui-checkbox label="lavoro" radio value="0" v-model="tipoevento" />
+          </div>
+        </sui-form-field>
+        <sui-form-field>
+          <div class="fc-event impegno">
+            <sui-checkbox label="impegno" radio value="1" v-model="tipoevento" />
+          </div>
+        </sui-form-field>
+        <sui-form-field>
+          <div class="fc-event scadenza">
+            <sui-checkbox label="scadenza" radio value="2" v-model="tipoevento" />
+          </div>
+        </sui-form-field>
+        <sui-form-field>
+          <div class="fc-event extra">
+            <sui-checkbox label="extra" radio value="3" v-model="tipoevento" />
+          </div>
+        </sui-form-field>
+        <sui-form-field>
+          <div class="fc-event nota">
+            <sui-checkbox label="nota" radio value="4" v-model="tipoevento" />
+          </div>
+        </sui-form-field>
 
-      <label>Tipo evento</label>
-      <sui-form-field > <div class="fc-event lavoro" >  <sui-checkbox label="lavoro" radio value=0 v-model="tipoevento" /></div>  </sui-form-field>
-      <sui-form-field >   <div class="fc-event impegno" >      <sui-checkbox label="impegno" radio value=1 v-model="tipoevento" /></div>      </sui-form-field>
-      <sui-form-field >  <div class="fc-event scadenza" >       <sui-checkbox label="scadenza" radio value=2 v-model="tipoevento" />  </div>    </sui-form-field>
-      <sui-form-field >   <div class="fc-event extra" >      <sui-checkbox label="extra" radio value=3 v-model="tipoevento" />   </div>   </sui-form-field>
-      <sui-form-field >   <div class="fc-event nota" >      <sui-checkbox label="nota" radio value=4 v-model="tipoevento" />   </div>   </sui-form-field>
-     
-    
+        Value: {{ tipoevento }}
+      </sui-form-fields>
 
-    Value: {{ tipoevento }}
- </sui-form-fields>
-
-<!-- 
+      <!-- 
       <div id='draggable-el' draggable="true" data-event='{ "title": "my event", "duration": "02:00" }'>drag me</div>
       <div class="fc-event scadenza" id="scadenza">Scadenza</div>
       <div class="fc-event impegno" id="impegno">Impegno</div>
@@ -149,7 +160,7 @@ export default {
   </div>
 </template>
 
-<style lang='css'>
+<style lang="css">
 h2 {
   margin: 0;
   font-size: 16px;
@@ -194,4 +205,3 @@ b {
 <style scoped src="@/css/core.css"></style>
 <style scoped src="@/css/colori.css"></style>
 <style scoped src="@/css/daygrid.css"></style>
-
