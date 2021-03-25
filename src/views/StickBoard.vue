@@ -5,12 +5,13 @@ export default {
   data: function () {
     return {
       maxzindex: 1,
-      Nota: function (id_, testo_, posx_, posy_, colore_) {
+      Nota: function (id_, testo_, posx_, posy_, colore_, zIndex_) {
         this.id = id_;
         this.testo = testo_;
         this.posx = posx_;
         this.posy = posy_;
         this.colore = colore_;
+        this.zIndex = zIndex_;
 
         return this;
       },
@@ -31,49 +32,47 @@ export default {
   methods: {
     salva() {
       let Notes_ = document.getElementsByClassName("nota");
+      let offsets = this.boarddiv.getBoundingClientRect();
+      let top = offsets.top;
+      let left = offsets.left;
 
       this.Notes = [];
       Notes_.forEach((nn) => {
+        console.log(nn.style.left, nn.style.top);
+        let aaa = this.estrai_offset(nn.style.left, left);
         let newNota = new this.Nota(
           nn.id,
           nn.innerHTML,
-          nn.style.offsetX,
-          nn.style.offsetY,
-          nn.colore
+          this.estrai_offset(nn.style.left, left),
+          this.estrai_offset(nn.style.top, top),
+          nn.colore,
+          nn.style.zIndex
         );
         this.Notes.push(newNota);
       });
-
+      console.log(Notes_);
       localStorage.Notes = JSON.stringify(this.Notes);
+    },
+
+    estrai_offset(px, start) {
+      console.log(px, start);
+      return parseInt(px.slice(0, -2) - start);
     },
     carica() {
       if (localStorage.Notes) this.Notes = JSON.parse(localStorage.Notes);
 
-      Notes.forEach((nn) => {
+      this.Notes.forEach((nn) => {
         let params = {
           id: nn.id,
-          offsetX: nn.offsetX,
-          offsetY: nn.offsetY,
+          left: nn.posx,
+          top: nn.posy,
           zIndex: nn.zIndex,
-          //   testo:maxId*1+1,
+
           testo: nn.testo,
           colore: nn.colore,
-          //  tipo:params.tipo
         };
-
+        console.log(params);
         this.addStick(params);
-
-        /*   let newNota = new this.Nota(
-          nn.id,
-          nn.innerHTML,
-          nn.offsetX,
-          nn.offsetY,
-          40,
-          60,
-          "black",
-          "yellow"
-        );
-        this.Notes.push(newNota); */
       });
     },
 
@@ -94,11 +93,13 @@ export default {
       let top = offsets.top;
       let left = offsets.left;
 
+      console.log(params);
+
       var note = document.createElement("div");
       note.id = params.id;
       note.classList.add("nota");
-      note.style.left = params.offsetX + left + "px";
-      note.style.top = params.offsetY + top + "px";
+      note.style.left = params.left + left + "px";
+      note.style.top = params.top + top + "px";
       note.style.width = 40 + "px";
       note.style.height = 60 + "px";
       note.style.color = "black";
@@ -145,8 +146,8 @@ export default {
 
       let params = {
         id: maxId + 1,
-        offsetX: evt.offsetX,
-        offsetY: evt.offsetY,
+        left: evt.offsetX,
+        top: evt.offsetY,
         zIndex: maxzindex * 1 + 1,
         //   testo:maxId*1+1,
         testo: "",
@@ -165,6 +166,7 @@ export default {
     <div>
       <div style="width: 500px">
         <button id="save" @click="salva">Salva</button>
+        <button id="carica" @click="carica">Carica</button>
         <button id="colore">Colore</button>
         <button id="fontp">Font +</button>
         <button id="fontm">Font -</button>
