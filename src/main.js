@@ -1,16 +1,17 @@
 import Vue from 'vue'
 import SuiVue from 'semantic-ui-vue';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue'
 import router from './router'
 import 'semantic-ui-css/semantic.min.css'
 
-window.$ = require('jquery')
-window.JQuery = require('jquery')
+
 
 
 
 Vue.config.productionTip = false
-Vue.use(SuiVue)
+Vue.use(ElementUI)
 new Vue({
   router,
   render: h => h(App),

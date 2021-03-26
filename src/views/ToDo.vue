@@ -1,64 +1,82 @@
 <script>
-
-
-
-
 export default {
   name: "MyToDo",
-  components: {
-   
-  },
+  components: {},
   data: function () {
     return {
-      Todo:[]
-     
+      value: 1,
+      Todos: [
+        { descrizione: "Do the dishes", fatto: false, importanza: 1, id: 0 },
+        {
+          descrizione: "Take out the trash",
+          fatto: false,
+          importanza: 2,
+          id: 1,
+        },
+        {
+          descrizione: "Finish doing laundry",
+          fatto: true,
+          importanza: 3,
+          id: 2,
+        },
+      ],
     };
   },
-    mounted: function () {
-    console.log("cazzo")
-  },
+  mounted: function () {},
   created: function () {
     this.carica();
   },
-  
+
   methods: {
+    handleRate(evt, props) {
+      console.log(888);
+      this.value = props.rating;
+    },
     salva() {
       localStorage.Todo = JSON.stringify(this.Todo);
     },
     carica() {
-      if (localStorage.Todo)
-        this.Todo = JSON.parse(localStorage.Todo);
+      if (localStorage.Todo) this.Todo = JSON.parse(localStorage.Todo);
     },
- 
-  
   },
 };
 </script>
 
 <template>
-<div>
+  <div>
+    <div is="sui-segment" style="padding-left: 300px">
+      <sui-table fixed>
+        <sui-table-header>
+          <sui-table-row>
+            <sui-table-header-cell>Descrizione</sui-table-header-cell>
+            <sui-table-header-cell>Importanza</sui-table-header-cell>
+            <sui-table-header-cell>Fatto!</sui-table-header-cell>
+          </sui-table-row>
+        </sui-table-header>
+        <sui-table-body>
+          <sui-table-row v-for="todo in Todos" :key="todo.id">
+            <sui-table-cell>{{ todo.descrizione }}</sui-table-cell>
+            <sui-table-cell>
+              <sui-rating :max-rating="5" @rate="handleRate" :v-model="todo.importanza" />
+            </sui-table-cell>
+            <sui-table-cell>
+              <sui-checkbox label="" toggle v-model="todo.fatto"
+            /></sui-table-cell>
+          </sui-table-row>
+        </sui-table-body>
+      </sui-table>
 
-  <div is="sui-segment" inverted>
-    <sui-button color="red" inverted>Red</sui-button>
-    <sui-button color="orange" inverted>Orange</sui-button>
-    <sui-button color="yellow" inverted>Yellow</sui-button>
-    <sui-button color="olive" inverted>Olive</sui-button>
-    <sui-button color="green" inverted>Green</sui-button>
-    <sui-button color="teal" inverted>Teal</sui-button>
-    <sui-button color="blue" inverted>Blue</sui-button>
-    <sui-button color="violet" inverted>Violet</sui-button>
-    <sui-button color="purple" inverted>Purple</sui-button>
-    <sui-button color="pink" inverted>Pink</sui-button>
-    <sui-button color="brown" inverted>Brown</sui-button>
-    <sui-button color="grey" inverted>Grey</sui-button>
-    <sui-button color="black" inverted>Black</sui-button>
-  </div>
+      <!-- 
+
+
+
+      <div v-for="todo in Todos" :key="todo.id">
+        <span>{{ todo.descrizione }}</span>
+        <span> <sui-checkbox label="Fatto!" toggle v-model="todo.fatto" /></span>
+        <span> <sui-rating :max-rating="5" :rating="todo.importanza" /></span>
+      </div> -->
+    </div>
   </div>
 </template>
 
-<style lang='css'>
-
-
-</style>
-
-
+<style lang="css"></style>
