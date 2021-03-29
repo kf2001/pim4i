@@ -44,7 +44,37 @@ export default {
 
 <template>
   <div>
-    <div is="sui-segment" style="padding-left: 300px">
+    <el-table :data="Todos" style="width: 100%">
+      <el-table-column label="Descrizione" width="180">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.descrizione }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="Importanza" width="50">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.importanza }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="Fatto!" width="50">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.fatto }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="Fatto!">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+            >Edit</el-button
+          >
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+            >Delete</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 
       <sui-table fixed>
         <sui-table-header>
           <sui-table-row>
@@ -66,16 +96,7 @@ export default {
         </sui-table-body>
       </sui-table>
 
-      <!-- 
-
-
-
-      <div v-for="todo in Todos" :key="todo.id">
-        <span>{{ todo.descrizione }}</span>
-        <span> <sui-checkbox label="Fatto!" toggle v-model="todo.fatto" /></span>
-        <span> <sui-rating :max-rating="5" :rating="todo.importanza" /></span>
-      </div> -->
-    </div>
+   -->
   </div>
 </template>
 

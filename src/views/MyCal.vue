@@ -111,43 +111,13 @@ export default {
 <template>
   <div class="demo-app">
     <div>
-      <sui-form-fields grouped>
-        <label>Tipo evento</label>
-        <sui-form-field>
-          <div class="fc-event lavoro">
-            <sui-checkbox label="lavoro" radio value="0" v-model="tipoevento" />
-          </div>
-        </sui-form-field>
-        <sui-form-field>
-          <div class="fc-event impegno">
-            <sui-checkbox label="impegno" radio value="1" v-model="tipoevento" />
-          </div>
-        </sui-form-field>
-        <sui-form-field>
-          <div class="fc-event scadenza">
-            <sui-checkbox label="scadenza" radio value="2" v-model="tipoevento" />
-          </div>
-        </sui-form-field>
-        <sui-form-field>
-          <div class="fc-event extra">
-            <sui-checkbox label="extra" radio value="3" v-model="tipoevento" />
-          </div>
-        </sui-form-field>
-        <sui-form-field>
-          <div class="fc-event nota">
-            <sui-checkbox label="nota" radio value="4" v-model="tipoevento" />
-          </div>
-        </sui-form-field>
-
-        Value: {{ tipoevento }}
-      </sui-form-fields>
-
-      <!-- 
-      <div id='draggable-el' draggable="true" data-event='{ "title": "my event", "duration": "02:00" }'>drag me</div>
-      <div class="fc-event scadenza" id="scadenza">Scadenza</div>
-      <div class="fc-event impegno" id="impegno">Impegno</div>
-      <div class="fc-event extra" id="extra">Extra</div>
-      <div class="fc-event nota" id="nota">Nota</div> -->
+      <el-radio-group v-model="tipoevento" size="small">
+        <el-radio-button :label="0" fill="#0f0">lavoro</el-radio-button>
+        <el-radio-button :label="1" class="impegno">impegno</el-radio-button>
+        <el-radio-button :label="2">scadenza</el-radio-button>
+        <el-radio-button :label="3">extra</el-radio-button>
+        <el-radio-button :label="4">nota</el-radio-button>
+      </el-radio-group>
     </div>
     <div class="demo-app-main">
       <FullCalendar class="demo-app-calendar" :options="calendarOptions">

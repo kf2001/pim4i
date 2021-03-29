@@ -25,6 +25,21 @@ export default {
   <div>
     <!-- <router-link class="spacing" to="/calendar">Calendario</router-link> -->
     <div style="height: 100%; float: left">
+      <el-menu default-active="2" class="el-menu-vertical-demo" :collapse="isCollapse">
+        <el-menu-item index="1">
+          <span slot="title"> <router-link to="/calendar">Calendario</router-link></span>
+        </el-menu-item>
+
+        <el-menu-item index="2">
+          <span slot="title"> <router-link to="/todo">To Do</router-link></span>
+        </el-menu-item>
+
+        <el-menu-item index="3">
+          <span slot="title"> <router-link to="/stick">StickBoard</router-link></span>
+        </el-menu-item>
+      </el-menu>
+
+      <!-- 
       <sui-menu
         is="sui-sidebar"
         id="docs-menu"
@@ -40,9 +55,11 @@ export default {
             <router-link is="sui-menu-item" to="/stick"> Stick Board</router-link>
           </sui-menu-menu>
         </sui-menu-item>
-      </sui-menu>
+      </sui-menu> -->
     </div>
-    <div style="height: 100%; float: right"><router-view></router-view></div>
+    <div style="height: 100%; float: left; text-align: left">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
