@@ -5,21 +5,7 @@ export default {
   data: function () {
     return {
       value: 1,
-      Todos: [
-        { descrizione: "Do the dishes", fatto: false, importanza: 1, id: 0 },
-        {
-          descrizione: "Take out the trash",
-          fatto: false,
-          importanza: 2,
-          id: 1,
-        },
-        {
-          descrizione: "Finish doing laundry",
-          fatto: true,
-          importanza: 3,
-          id: 2,
-        },
-      ],
+      Todos: [],
     };
   },
   mounted: function () {},
@@ -28,19 +14,25 @@ export default {
   },
 
   methods: {
-    handleRate(evt, props) {
-      console.log(888);
-      this.value = props.rating;
-    },
     salva() {
-      localStorage.Todo = JSON.stringify(this.Todo);
+      localStorage.Todos = JSON.stringify(this.Todos);
     },
     carica() {
-      if (localStorage.Todo) this.Todo = JSON.parse(localStorage.Todo);
+      if (localStorage.Todos) this.Todos = JSON.parse(localStorage.Todos);
     },
     elimina(idx) {
       console.log(idx);
       this.Todos.splice(idx, 1);
+    },
+
+    aggiungi() {
+      let newTodo = {
+        descrizione: "",
+        fatto: false,
+        importanza: 0,
+      };
+
+      this.Todos.push(newTodo);
     },
   },
 };
@@ -49,6 +41,22 @@ export default {
 <template>
   <div>
     <el-card style="width: 500px">
+      <div slot="header" class="clearfix">
+        <el-button
+          type="success"
+          icon="el-icon-plus"
+          size="small"
+          circle
+          @click="aggiungi"
+        ></el-button>
+        <el-button
+          type="info"
+          icon="el-icon-folder"
+          circle
+          size="small"
+          @click="salva"
+        ></el-button>
+      </div>
       <table>
         <th>Descrizione</th>
         <th>Fatto!</th>
