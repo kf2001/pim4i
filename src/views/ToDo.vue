@@ -38,65 +38,44 @@ export default {
     carica() {
       if (localStorage.Todo) this.Todo = JSON.parse(localStorage.Todo);
     },
+    elimina(idx) {
+      console.log(idx);
+      this.Todos.splice(idx, 1);
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <el-table :data="Todos" style="width: 100%">
-      <el-table-column label="Descrizione" width="180">
-        <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.descrizione }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Importanza" width="50">
-        <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.importanza }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Fatto!" width="50">
-        <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.fatto }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Fatto!">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >Edit</el-button
-          >
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >Delete</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 
-      <sui-table fixed>
-        <sui-table-header>
-          <sui-table-row>
-            <sui-table-header-cell>Descrizione</sui-table-header-cell>
-            <sui-table-header-cell>Importanza</sui-table-header-cell>
-            <sui-table-header-cell>Fatto!</sui-table-header-cell>
-          </sui-table-row>
-        </sui-table-header>
-        <sui-table-body>
-          <sui-table-row v-for="todo in Todos" :key="todo.id">
-            <sui-table-cell>{{ todo.descrizione }}</sui-table-cell>
-            <sui-table-cell>
-              <sui-rating :max-rating="5" @rate="handleRate" :v-model="todo.importanza" />
-            </sui-table-cell>
-            <sui-table-cell>
-              <sui-checkbox label="" toggle v-model="todo.fatto"
-            /></sui-table-cell>
-          </sui-table-row>
-        </sui-table-body>
-      </sui-table>
-
-   -->
+    <el-card style="width: 500px">
+      <table>
+        <th>Descrizione</th>
+        <th>Fatto!</th>
+        <th>Importanza</th>
+        <tr v-for="(td, idx) in Todos" :key="idx">
+          <td>
+            <el-input v-model="td.descrizione"></el-input>
+          </td>
+          <td>
+            <el-checkbox v-model="td.fatto"></el-checkbox>
+            <!-- <el-switch v-model="td.fatto" active-text="" inactive-text=""> </el-switch> -->
+          </td>
+          <td>
+            <el-rate v-model="td.importanza"></el-rate>
+          </td>
+          <td>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              circle
+              size="mini"
+              @click="elimina(idx)"
+            ></el-button>
+          </td>
+        </tr>
+      </table>
+    </el-card>
   </div>
 </template>
 
