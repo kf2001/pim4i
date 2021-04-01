@@ -25,6 +25,10 @@ export default {
   <div>
     <div style="height: 100%; float: left">
       <el-menu default-active="2" class="el-menu-vertical-demo">
+
+          <el-menu-item index="0">
+          <span slot="title"> <router-link to="/home">Home</router-link></span>
+        </el-menu-item>
         <el-menu-item index="1">
           <span slot="title"> <router-link to="/calendar">Calendario</router-link></span>
         </el-menu-item>

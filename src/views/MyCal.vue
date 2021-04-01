@@ -48,12 +48,7 @@ export default {
         droppable: true,
         dropAccept: true,
         eventDragStop: function (event, jsEvent, ui, view) {},
-        // this allows things to be dropped onto the calendar
-        /* you can update a remote database when these fire:
-        eventAdd:
-        eventChange:
-        eventRemove:
-        */
+     
       },
       currentEvents: [],
     };
@@ -110,10 +105,11 @@ export default {
 
 <template>
   <div class="demo-app">
+ 
     <div>
       <el-radio-group v-model="tipoevento" size="small">
         <el-radio-button :label="0" fill="#0f0">lavoro</el-radio-button>
-        <el-radio-button :label="1" class="impegno">impegno</el-radio-button>
+        <el-radio-button :label="1" >impegno</el-radio-button>
         <el-radio-button :label="2">scadenza</el-radio-button>
         <el-radio-button :label="3">extra</el-radio-button>
         <el-radio-button :label="4">nota</el-radio-button>

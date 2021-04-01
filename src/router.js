@@ -5,10 +5,17 @@ import Vue from 'vue'
     
     import MyToDo from './views/ToDo.vue'
 	import MyStick from './views/StickBoard.vue'
+	import Home from './views/Home.vue'
 
 	Vue.use(Router)
 	export default new Router({
 	  routes: [
+
+		{
+            path: '/home',
+            name: 'Home',
+            component: Home
+          },
 		{
 		  path: '/calendar',
 		  name: 'Calendar',

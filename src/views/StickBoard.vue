@@ -171,17 +171,11 @@ export default {
       let maxzindex = this.getMaxZIndex(Notes_);
       let maxId = this.getMaxId(Notes_);
 
-      /*      Notes_.forEach((nn) => {
-        if (nn.style.zIndex * 1 > maxzindex * 1) maxzindex = 1 * nn.style.zIndex;
-        if (nn.id * 1 > maxId * 1) maxId = 1 * nn.id;
-      });
- */
       let params = {
         id: maxId + 1,
         left: evt.offsetX,
         top: evt.offsetY,
         zIndex: maxzindex * 1 + 1,
-
         testo: "",
         colore: Math.floor(Math.random() * this.backGrounds.length),
       };

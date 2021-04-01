@@ -13,8 +13,7 @@ export default {
   created: function () {
     this.carica();
   },
-  computed: {},
-
+ 
   methods: {
     salva() {
       localStorage.Todos = JSON.stringify(this.Todos);
@@ -24,8 +23,9 @@ export default {
       this.Todos = this.Todos.sort((a, b) => b.priorita - a.priorita);
     },
     elimina(idx) {
-      console.log(idx);
-      this.Todos.splice(idx, 1);
+         this.Todos.splice(idx, 1);
+        this.salva();
+      this.carica();
     },
 
     aggiungi() {
@@ -36,20 +36,23 @@ export default {
       };
 
       this.Todos.push(newTodo);
+      this.edit(this.Todos.length-1)
     },
     edit(e) {
+     
       this.modo[e] = 1;
       this.TodosUnDo = JSON.parse(JSON.stringify(this.Todos));
+      
       this.$forceUpdate();
     },
     conferma(e) {
-      console.log(e, 1);
+     
       this.modo[e] = 0;
       this.salva();
       this.carica();
     },
     annulla(e) {
-      console.log(e, 2);
+    
       this.modo[e] = 0;
 
       this.Todos = JSON.parse(JSON.stringify(this.TodosUnDo));
@@ -63,20 +66,14 @@ export default {
   <div>
     <el-card style="width: 700px">
       <div slot="header" class="clearfix">
-        <el-button
+      <!--   <el-button
           type="success"
           icon="el-icon-plus"
           size="small"
           circle
           @click="aggiungi"
-        ></el-button>
-        <el-button
-          type="info"
-          icon="el-icon-folder"
-          circle
-          size="small"
-          @click="salva"
-        ></el-button>
+        ></el-button> -->
+      
       </div>
       <table>
         <th style="width: 40%">Descrizione</th>
@@ -88,7 +85,7 @@ export default {
         <th></th>
         <tr v-for="(td, idx) in Todos" :key="idx">
           <td>
-            <el-input :disabled="!modo[idx]" v-model="td.descrizione"></el-input>
+            <el-input :disabled="!modo[idx]" v-model="td.descrizione" size="mini"></el-input>
           </td>
 
           <td>
@@ -99,21 +96,15 @@ export default {
               :min="1"
               :max="10"
               show-stops
+              size="mini"
             >
             </el-slider>
           </td>
           <td>
-            <el-checkbox :disabled="!modo[idx]" v-model="td.fatto"></el-checkbox>
+            <el-checkbox :disabled="!modo[idx]" v-model="td.fatto" size="large"></el-checkbox>
           </td>
           <td>
-            <el-button
-              v-show="!modo[idx]"
-              type="danger"
-              icon="el-icon-delete"
-              circle
-              size="mini"
-              @click="elimina(idx)"
-            ></el-button>
+           
             <el-button
               v-show="modo[idx]"
               type="success"
@@ -139,15 +130,43 @@ export default {
               size="mini"
               @click="annulla(idx)"
             ></el-button>
+             <el-button
+              v-show="!modo[idx]"
+              type="danger"
+              icon="el-icon-delete"
+              circle
+              size="mini"
+              @click="elimina(idx)"
+            ></el-button>
           </td>
         </tr>
       </table>
+       <div class="bottom clearfix">
+          <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          circle
+          @click="aggiungi"
+        ></el-button>
+        </div>
     </el-card>
   </div>
 </template>
 
 <style lang="css">
 td {
-  padding: 1em;
+  padding-right: 2em;
+  
+}
+input[type="text"]:disabled {
+  background:aquamarine !important;
+  color: black  !important;
+  font-weight: normal;
+}
+input[type="text"]:enabled {
+  background:lavender !important;
+  color: blue  !important;
+  font-weight: bold;
 }
 </style>
